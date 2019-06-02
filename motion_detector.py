@@ -1,5 +1,6 @@
 import cv2
 import pandas
+import time
 from _datetime import datetime
 
 first_frame = None
@@ -8,6 +9,8 @@ times = []
 df = pandas.DataFrame(columns=["Start", "End"])
 
 video = cv2.VideoCapture(0)
+video.read()
+time.sleep(1.0)
 
 while True:
     check, frame = video.read()
@@ -37,6 +40,8 @@ while True:
 
     status_list.append(status)
 
+    status_list = status_list[-2:]
+
     if status_list[-1] == 1 and status_list[-2] == 0:
         times.append(datetime.now())
 
@@ -58,7 +63,7 @@ print(status_list)
 print(times)
 
 for i in range(0, len(times), 2):
-    df = df.append({"Start":times[i], "End":times[i+1]}, ignore_index=True)
+    df = df.append({"Start": times[i], "End":times[i+1]}, ignore_index=True)
 
 df.to_csv("Times.csv")
 
